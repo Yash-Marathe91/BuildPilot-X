@@ -95,7 +95,7 @@ export default function CreateProjectPage() {
     setAgentResponses(initialResponses);
 
     const idea = values.title;
-    const context = \`Industry: \${values.industry}. Target Audience: \${values.target_audience}. Description: \${values.description}\`;
+    const context = `Industry: ${values.industry}. Target Audience: ${values.target_audience}. Description: ${values.description}`;
 
     try {
       await AIClient.streamStartup(
@@ -182,7 +182,7 @@ export default function CreateProjectPage() {
               
               {/* Active glow effect while streaming */}
               {!isComplete && agentResponses[agent.id] && (
-                 <div className={cn("absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r via-transparent to-transparent opacity-50", \`from-\${agent.color.replace('text-', '')}\`)} />
+                 <div className={cn("absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r via-transparent to-transparent opacity-50", `from-${agent.color.replace('text-', '')}`)} />
               )}
             </div>
           ))}
