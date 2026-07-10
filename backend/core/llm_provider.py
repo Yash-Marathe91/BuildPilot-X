@@ -40,10 +40,12 @@ class LLMProvider:
                 self.use_local_hf = False
         
         # Fallback client (Fireworks AI)
-        self.fallback_client = AsyncOpenAI(
-            base_url=settings.FIREWORKS_URL,
-            api_key=settings.FIREWORKS_API_KEY
-        )
+        self.fallback_client = None
+        if settings.FIREWORKS_API_KEY:
+            self.fallback_client = AsyncOpenAI(
+                base_url=settings.FIREWORKS_URL,
+                api_key=settings.FIREWORKS_API_KEY
+            )
 
     def _format_messages_for_hf(self, messages: List[Dict[str, str]]) -> str:
         # Simple formatting for models like Gemma/Llama
@@ -75,6 +77,9 @@ class LLMProvider:
                 logger.warning(f"Local HF generation failed: {e}. Falling back.")
                 
         # Fallback to Fireworks API
+        if self.fallback_client is None:
+            raise Exception("No Fireworks API key configured and local AMD model failed.")
+            
         try:
             response = await self.fallback_client.chat.completions.create(
                 model=settings.FALLBACK_MODEL,
@@ -120,6 +125,10 @@ class LLMProvider:
                 logger.warning(f"Local HF streaming failed: {e}. Falling back.")
 
         # Fallback to Fireworks API Streaming
+        if self.fallback_client is None:
+            yield "Error: No Fireworks API key configured and local AMD model failed."
+            return
+
         try:
             stream = await self.fallback_client.chat.completions.create(
                 model=settings.FALLBACK_MODEL,
