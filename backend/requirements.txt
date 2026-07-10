@@ -1,0 +1,12 @@
+fastapi
+uvicorn[standard]
+pydantic
+pydantic-settings
+httpx
+openai
+python-dotenv
+asyncio
+torch
+transformers
+accelerate
+sse-starlette
