@@ -101,3 +101,37 @@ class StartupOrchestrator:
         ]
         async for chunk in self._stream_tasks(tasks):
             yield chunk
+
+    # --- New Flows ---
+    
+    async def stream_competitors(self, idea: str, context: str = ""):
+        tasks = [
+            self._stream_agent(self.ceo, context, f"Identify top 3 direct competitors and our strategic moat against them for: {idea}", "ceo"),
+            self._stream_agent(self.cmo, context, f"Analyze competitor marketing channels and where we can outmaneuver them for: {idea}", "cmo"),
+        ]
+        async for chunk in self._stream_tasks(tasks):
+            yield chunk
+
+    async def stream_database(self, idea: str, context: str = ""):
+        tasks = [
+            self._stream_agent(self.dba, context, f"Write the exact PostgreSQL / Supabase schema definitions with RLS policies for: {idea}", "dba"),
+            self._stream_agent(self.cto, context, f"Explain the caching strategy (e.g. Redis) and ORM choices for this schema for: {idea}", "cto"),
+        ]
+        async for chunk in self._stream_tasks(tasks):
+            yield chunk
+
+    async def stream_wireframes(self, idea: str, context: str = ""):
+        tasks = [
+            self._stream_agent(self.cdo, context, f"Design the detailed layout and user flows for the 3 main screens of: {idea}", "cdo"),
+            self._stream_agent(self.pm, context, f"Define the core user actions and conversion funnels for these wireframes: {idea}", "pm"),
+        ]
+        async for chunk in self._stream_tasks(tasks):
+            yield chunk
+
+    async def stream_roadmap(self, idea: str, context: str = ""):
+        tasks = [
+            self._stream_agent(self.pm, context, f"Define the exact feature timeline for Q1, Q2, and Q3 for: {idea}", "pm"),
+            self._stream_agent(self.cto, context, f"Define the engineering milestones and technical debt repayment schedule for: {idea}", "cto"),
+        ]
+        async for chunk in self._stream_tasks(tasks):
+            yield chunk

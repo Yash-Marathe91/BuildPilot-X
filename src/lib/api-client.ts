@@ -130,6 +130,18 @@ export const AIClient = {
   streamInvestorReview: (req: GenerateRequest, callbacks: { onMessage: (d: any) => void, onError: (e: any) => void, onComplete: () => void }) => 
     AIClient.stream("/investor-review", req, callbacks.onMessage, callbacks.onError, callbacks.onComplete),
 
+  streamCompetitors: (req: GenerateRequest, callbacks: { onMessage: (d: any) => void, onError: (e: any) => void, onComplete: () => void }) => 
+    AIClient.stream("/competitor-analysis", req, callbacks.onMessage, callbacks.onError, callbacks.onComplete),
+
+  streamDatabase: (req: GenerateRequest, callbacks: { onMessage: (d: any) => void, onError: (e: any) => void, onComplete: () => void }) => 
+    AIClient.stream("/database", req, callbacks.onMessage, callbacks.onError, callbacks.onComplete),
+
+  streamWireframes: (req: GenerateRequest, callbacks: { onMessage: (d: any) => void, onError: (e: any) => void, onComplete: () => void }) => 
+    AIClient.stream("/wireframes", req, callbacks.onMessage, callbacks.onError, callbacks.onComplete),
+
+  streamRoadmap: (req: GenerateRequest, callbacks: { onMessage: (d: any) => void, onError: (e: any) => void, onComplete: () => void }) => 
+    AIClient.stream("/roadmap", req, callbacks.onMessage, callbacks.onError, callbacks.onComplete),
+
   // Fallback JSON endpoints
   generateBusinessPlan: (req: GenerateRequest) => AIClient.post("/business-plan", req),
   analyzeMarket: (req: GenerateRequest) => AIClient.post("/market-analysis", req),

@@ -63,18 +63,42 @@ async def investor_review(req: GenerateRequest):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@router.post("/market-analysis")
-async def market_analysis(req: GenerateRequest):
-    return {"message": "Market analysis endpoint ready for orchestration"}
-
 @router.post("/competitor-analysis")
 async def competitor_analysis(req: GenerateRequest):
-    return {"message": "Competitor analysis endpoint ready for orchestration"}
+    try:
+        return StreamingResponse(
+            orchestrator.stream_competitors(req.idea, req.context),
+            media_type="text/event-stream"
+        )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 @router.post("/database")
 async def database(req: GenerateRequest):
-    return {"message": "Database endpoint ready for orchestration"}
+    try:
+        return StreamingResponse(
+            orchestrator.stream_database(req.idea, req.context),
+            media_type="text/event-stream"
+        )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 @router.post("/wireframes")
 async def wireframes(req: GenerateRequest):
-    return {"message": "Wireframes endpoint ready for orchestration"}
+    try:
+        return StreamingResponse(
+            orchestrator.stream_wireframes(req.idea, req.context),
+            media_type="text/event-stream"
+        )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.post("/roadmap")
+async def roadmap(req: GenerateRequest):
+    try:
+        return StreamingResponse(
+            orchestrator.stream_roadmap(req.idea, req.context),
+            media_type="text/event-stream"
+        )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

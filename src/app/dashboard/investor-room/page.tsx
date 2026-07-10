@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useRef, useEffect } from "react";
 import { 
   BarChart as RechartsBarChart, 
   Bar, 
@@ -11,8 +12,11 @@ import {
   AreaChart,
   Area
 } from "recharts";
-import { Presentation, Download, Share2, TrendingUp, DollarSign, Users, Briefcase } from "lucide-react";
+import { Presentation, Download, Share2, TrendingUp, DollarSign, Users, Briefcase, Sparkles, BriefcaseBusiness } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { AIClient } from "@/lib/api-client";
+import { cn } from "@/lib/utils";
+import { toast } from "sonner";
 
 const revenueData = [
   { month: "Q1", revenue: 120000, projected: 150000 },
@@ -30,7 +34,63 @@ const userGrowthData = [
   { month: "Jun", users: 18500 },
 ];
 
+const AGENTS = [
+  { id: "investor", name: "Victor", role: "VC", icon: TrendingUp, color: "text-yellow-400", border: "border-yellow-400/30" },
+  { id: "ceo", name: "Alexander", role: "CEO", icon: BriefcaseBusiness, color: "text-purple-400", border: "border-purple-400/30" },
+];
+
 export default function InvestorRoomPage() {
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [isComplete, setIsComplete] = useState(false);
+  const [agentResponses, setAgentResponses] = useState<Record<string, string>>({ investor: "", ceo: "" });
+  const [showPitchSim, setShowPitchSim] = useState(false);
+  
+  const scrollRefs = useRef<Record<string, HTMLDivElement | null>>({});
+
+  useEffect(() => {
+    Object.keys(agentResponses).forEach(id => {
+      const el = scrollRefs.current[id];
+      if (el) el.scrollTop = el.scrollHeight;
+    });
+  }, [agentResponses]);
+
+  const simulatePitch = async () => {
+    setShowPitchSim(true);
+    setIsGenerating(true);
+    setIsComplete(false);
+    setAgentResponses({ investor: "", ceo: "" });
+
+    try {
+      await AIClient.streamInvestorReview(
+        { idea: "A high-performance enterprise SaaS platform requiring real-time multi-agent orchestration." },
+        {
+          onMessage: (data) => {
+            if (data.agent && data.chunk) {
+              setAgentResponses(prev => ({
+                ...prev,
+                [data.agent]: prev[data.agent] + data.chunk
+              }));
+            }
+          },
+          onError: (error) => {
+            console.error(error);
+            toast.error("Failed to stream investor feedback.");
+            setIsGenerating(false);
+            setIsComplete(true);
+          },
+          onComplete: () => {
+            toast.success("Pitch simulation complete.");
+            setIsGenerating(false);
+            setIsComplete(true);
+          }
+        }
+      );
+    } catch (e) {
+      toast.error("Simulation failed.");
+      setIsGenerating(false);
+    }
+  };
+
   return (
     <div className="flex flex-col gap-8 pb-12">
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
@@ -44,9 +104,22 @@ export default function InvestorRoomPage() {
         </div>
         
         <div className="flex items-center gap-3">
-          <Button variant="outline" className="rounded-xl h-11 px-6 border-white/10 hover:bg-white/5">
-            <Share2 className="w-4 h-4 mr-2" />
-            Share Link
+          <Button 
+            onClick={simulatePitch}
+            disabled={isGenerating}
+            className="rounded-xl h-11 px-6 bg-white/5 hover:bg-white/10 text-foreground border border-white/10"
+          >
+            {isGenerating ? (
+              <span className="flex items-center gap-2">
+                <Sparkles className="w-4 h-4 animate-spin text-yellow-400" />
+                VC Interrogating...
+              </span>
+            ) : (
+              <span className="flex items-center gap-2">
+                <Sparkles className="w-4 h-4 text-yellow-400" />
+                Simulate Pitch Meeting
+              </span>
+            )}
           </Button>
           <Button className="rounded-xl h-11 px-6 bg-[#ffb4ab] hover:bg-[#ffb4ab]/80 text-black font-semibold shadow-[0_0_15px_rgba(255,180,171,0.3)]">
             <Download className="w-4 h-4 mr-2" />
@@ -55,6 +128,45 @@ export default function InvestorRoomPage() {
         </div>
       </div>
 
+      {showPitchSim && (
+        <div className="glass-card rounded-2xl p-6 border-white/10 flex flex-col gap-4 animate-in fade-in slide-in-from-top-4 duration-500">
+          <h3 className="text-xl font-semibold flex items-center gap-2 border-b border-white/5 pb-4">
+            <BriefcaseBusiness className="w-5 h-5 text-yellow-400" />
+            Live Pitch Simulation
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {AGENTS.map((agent) => (
+              <div key={agent.id} className={cn("glass-card rounded-xl p-5 flex flex-col gap-3 relative overflow-hidden transition-all duration-500 h-[300px]", isGenerating ? "border-white/20 shadow-lg" : "border-white/5")}>
+                <div className="flex items-center gap-3 border-b border-white/5 pb-3">
+                  <div className={cn("size-10 rounded-xl flex items-center justify-center shrink-0 border", agent.border, agent.color.replace('text', 'bg').replace('400', '400/10'))}>
+                    <agent.icon className={cn("size-5", agent.color)} />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="font-semibold text-white/90">{agent.role}</h3>
+                    <p className="text-xs text-muted-foreground uppercase">{agent.name}</p>
+                  </div>
+                  {isGenerating && (
+                    <span className="relative flex h-2 w-2">
+                      <span className={cn("animate-ping absolute inline-flex h-full w-full rounded-full opacity-75", agent.color.replace('text-', 'bg-'))}></span>
+                      <span className={cn("relative inline-flex rounded-full h-2 w-2", agent.color.replace('text-', 'bg-'))}></span>
+                    </span>
+                  )}
+                </div>
+                <div 
+                  ref={(el) => { scrollRefs.current[agent.id] = el; }}
+                  className="flex-1 overflow-y-auto pr-2 text-sm text-white/80 font-light leading-relaxed whitespace-pre-wrap scrollbar-thin scrollbar-thumb-white/10"
+                >
+                  {agentResponses[agent.id] ? agentResponses[agent.id] : (
+                    <span className="text-white/20 italic">Awaiting response...</span>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Metrics Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <div className="glass-card p-6 rounded-2xl flex flex-col gap-2">
           <div className="flex items-center justify-between text-muted-foreground mb-2">
@@ -111,7 +223,7 @@ export default function InvestorRoomPage() {
               <RechartsBarChart data={revenueData} margin={{ top: 10, right: 0, left: -20, bottom: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
                 <XAxis dataKey="month" stroke="rgba(255,255,255,0.2)" fontSize={12} tickLine={false} axisLine={false} />
-                <YAxis stroke="rgba(255,255,255,0.2)" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(val) => `$${val/1000}k`} />
+                <YAxis stroke="rgba(255,255,255,0.2)" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(val) => \`$\${val/1000}k\`} />
                 <Tooltip 
                   cursor={{ fill: 'rgba(255,255,255,0.05)' }}
                   contentStyle={{ backgroundColor: 'rgba(0,0,0,0.8)', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.1)' }}
@@ -139,7 +251,7 @@ export default function InvestorRoomPage() {
                   </linearGradient>
                 </defs>
                 <XAxis dataKey="month" stroke="rgba(255,255,255,0.2)" fontSize={12} tickLine={false} axisLine={false} />
-                <YAxis stroke="rgba(255,255,255,0.2)" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(val) => `${val/1000}k`} />
+                <YAxis stroke="rgba(255,255,255,0.2)" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(val) => \`\${val/1000}k\`} />
                 <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
                 <Tooltip 
                   contentStyle={{ backgroundColor: 'rgba(0,0,0,0.8)', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.1)' }}
@@ -149,32 +261,6 @@ export default function InvestorRoomPage() {
               </AreaChart>
             </ResponsiveContainer>
           </div>
-        </div>
-      </div>
-
-      {/* Auto-Generated Slide Deck Preview */}
-      <div className="mt-4">
-        <h3 className="text-xl font-semibold mb-6 flex items-center gap-2">
-          <Presentation className="w-5 h-5 text-muted-foreground" />
-          Auto-Generated Pitch Deck
-        </h3>
-        
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {[
-            { title: "Problem & Solution", desc: "The market gap and our unique approach." },
-            { title: "Market Opportunity", desc: "$14.2B TAM with 12.5% YoY growth." },
-            { title: "Traction & Metrics", desc: "$1.8M ARR with high retention." },
-            { title: "The Team", desc: "Elite engineering & domain experts." },
-          ].map((slide, idx) => (
-            <div key={idx} className="aspect-video bg-black/40 border border-white/10 rounded-xl flex flex-col items-center justify-center p-4 text-center group cursor-pointer hover:border-white/30 transition-colors relative overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-              <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center mb-3 text-xs font-bold">
-                {idx + 1}
-              </div>
-              <h4 className="font-semibold text-sm mb-1">{slide.title}</h4>
-              <p className="text-xs text-muted-foreground">{slide.desc}</p>
-            </div>
-          ))}
         </div>
       </div>
     </div>
