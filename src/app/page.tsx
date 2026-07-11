@@ -299,7 +299,7 @@ export default function LandingPage() {
             </p>
             <div className="flex flex-wrap justify-center gap-4">
               <div className="glass-card px-6 py-3 rounded-full text-white/80 text-sm font-medium border border-white/10 bg-white/5">100% Autonomous</div>
-              <div className="glass-card px-6 py-3 rounded-full text-white/80 text-sm font-medium border border-white/10 bg-white/5">No Placeholder Code</div>
+              <div className="glass-card px-6 py-3 rounded-full text-white/80 text-sm font-medium border border-white/10 bg-white/5">Production-Ready Architecture</div>
               <div className="glass-card px-6 py-3 rounded-full text-white/80 text-sm font-medium border border-white/10 bg-white/5">AMD Hardware Powered</div>
             </div>
           </div>

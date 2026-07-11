@@ -66,7 +66,7 @@ export default function LoginPage() {
                   type="email" 
                   required
                   placeholder="founder@example.com"
-                  className="bg-white/5 border-white/10 h-14 pl-11 px-4 rounded-xl focus-visible:ring-1 focus-visible:ring-primary focus-visible:border-primary transition-all text-white placeholder:text-white/30"
+                  className="bg-white/5 border-white/10 h-14 pl-12 pr-4 rounded-xl focus-visible:ring-1 focus-visible:ring-primary focus-visible:border-primary transition-all text-white placeholder:text-white/30"
                 />
               </div>
             </div>
@@ -87,7 +87,7 @@ export default function LoginPage() {
                   type="password" 
                   required
                   placeholder="••••••••"
-                  className="bg-white/5 border-white/10 h-14 pl-11 px-4 rounded-xl focus-visible:ring-1 focus-visible:ring-primary focus-visible:border-primary transition-all text-white placeholder:text-white/30"
+                  className="bg-white/5 border-white/10 h-14 pl-12 pr-4 rounded-xl focus-visible:ring-1 focus-visible:ring-primary focus-visible:border-primary transition-all text-white placeholder:text-white/30"
                 />
               </div>
             </div>

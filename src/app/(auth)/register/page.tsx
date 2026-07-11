@@ -46,7 +46,7 @@ export default function RegisterPage() {
                   type="email" 
                   required
                   placeholder="founder@example.com"
-                  className="bg-white/5 border-white/10 h-14 pl-11 px-4 rounded-xl focus-visible:ring-1 focus-visible:ring-secondary focus-visible:border-secondary transition-all text-white placeholder:text-white/30"
+                  className="bg-white/5 border-white/10 h-14 pl-12 pr-4 rounded-xl focus-visible:ring-1 focus-visible:ring-secondary focus-visible:border-secondary transition-all text-white placeholder:text-white/30"
                 />
               </div>
             </div>
@@ -62,7 +62,7 @@ export default function RegisterPage() {
                   type="password" 
                   required
                   placeholder="••••••••"
-                  className="bg-white/5 border-white/10 h-14 pl-11 px-4 rounded-xl focus-visible:ring-1 focus-visible:ring-secondary focus-visible:border-secondary transition-all text-white placeholder:text-white/30"
+                  className="bg-white/5 border-white/10 h-14 pl-12 pr-4 rounded-xl focus-visible:ring-1 focus-visible:ring-secondary focus-visible:border-secondary transition-all text-white placeholder:text-white/30"
                 />
               </div>
               <p className="text-xs text-white/40 mt-1">Must be at least 6 characters.</p>
