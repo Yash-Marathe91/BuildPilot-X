@@ -224,9 +224,8 @@ export default function LandingPage() {
           
           <nav className="hidden lg:flex items-center gap-8">
             <Link href="#features" className="text-sm text-white/60 hover:text-white transition-colors">Features</Link>
-            <Link href="#how-it-works" className="text-sm text-white/60 hover:text-white transition-colors">How it Works</Link>
-            <Link href="#pricing" className="text-sm text-white/60 hover:text-white transition-colors">Pricing</Link>
-            <Link href="#faq" className="text-sm text-white/60 hover:text-white transition-colors">FAQ</Link>
+            <Link href="#about" className="text-sm text-white/60 hover:text-white transition-colors">About Us</Link>
+            <Link href="#engineered" className="text-sm text-white/60 hover:text-white transition-colors">Engineered For</Link>
           </nav>
 
           <div className="flex items-center gap-4">
