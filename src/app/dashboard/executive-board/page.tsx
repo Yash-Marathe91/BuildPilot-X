@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { Send, BrainCircuit, LineChart, Code2, Sparkles, UserCircle, Loader2 } from "lucide-react";
+import { Send, BrainCircuit, LineChart, Code2, Sparkles, UserCircle, Loader2, Mic, MicOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Avatar } from "@/components/ui/avatar";
@@ -44,6 +44,49 @@ export default function ExecutiveBoardPage() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const [input, setInput] = useState("");
+  const [isListening, setIsListening] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const recognitionRef = useRef<any>(null);
+
+  useEffect(() => {
+    if (typeof window !== "undefined" && ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window)) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+      recognitionRef.current = new SpeechRecognition();
+      recognitionRef.current.continuous = false;
+      recognitionRef.current.interimResults = true;
+      
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      recognitionRef.current.onresult = (event: any) => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const transcript = Array.from(event.results)
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          .map((result: any) => result[0])
+          .map((result) => result.transcript)
+          .join('');
+        setInput(transcript);
+      };
+
+      recognitionRef.current.onend = () => {
+        setIsListening(false);
+      };
+    }
+  }, []);
+
+  const toggleListening = () => {
+    if (!recognitionRef.current) {
+      alert("Speech recognition is not supported in this browser. Please use Chrome or Edge.");
+      return;
+    }
+    if (isListening) {
+      recognitionRef.current.stop();
+      setIsListening(false);
+    } else {
+      setInput("");
+      recognitionRef.current.start();
+      setIsListening(true);
+    }
+  };
   const { messages, sendMessage, status, setMessages } = useChat({
     // @ts-expect-error api parameter works in this specific sdk version but types are missing
     api: '/api/chat',
@@ -186,16 +229,32 @@ export default function ExecutiveBoardPage() {
           </ScrollArea>
 
           <div className="p-4 bg-background/50 backdrop-blur-md border-t border-white/5 z-10">
-            <form onSubmit={handleSubmit} className="relative max-w-3xl mx-auto">
-              <Input 
-                value={input}
-                onChange={handleInputChange}
-                disabled={isLoading}
-                placeholder={`Ask your ${selectedAgent.role} for advice...`}
-                className="w-full h-14 pl-4 pr-14 bg-black/20 border-white/10 focus-visible:ring-primary rounded-xl text-base disabled:opacity-50"
-              />
-              <Button type="submit" disabled={isLoading || !input.trim()} size="icon" className="absolute right-2 top-2 w-10 h-10 rounded-lg bg-primary hover:bg-primary/80 text-white disabled:opacity-50">
-                {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
+            <form onSubmit={handleSubmit} className="relative max-w-3xl mx-auto flex items-center gap-2">
+              <div className="relative flex-1">
+                <Input 
+                  value={input}
+                  onChange={handleInputChange}
+                  disabled={isLoading || isListening}
+                  placeholder={isListening ? "Listening..." : `Ask your ${selectedAgent.role} for advice...`}
+                  className={cn(
+                    "w-full h-14 pl-4 pr-14 bg-black/20 border-white/10 focus-visible:ring-primary rounded-xl text-base disabled:opacity-50 transition-all",
+                    isListening && "border-red-500/50 focus-visible:ring-red-500/50 bg-red-500/5"
+                  )}
+                />
+                <Button 
+                  type="button" 
+                  onClick={toggleListening}
+                  variant="ghost"
+                  className={cn(
+                    "absolute right-2 top-2 w-10 h-10 rounded-lg transition-colors", 
+                    isListening ? "text-red-500 hover:text-red-600 bg-red-500/10 hover:bg-red-500/20" : "text-muted-foreground hover:text-foreground hover:bg-white/5"
+                  )}
+                >
+                  {isListening ? <Mic className="w-5 h-5 animate-pulse" /> : <MicOff className="w-5 h-5" />}
+                </Button>
+              </div>
+              <Button type="submit" disabled={isLoading || !input.trim()} size="icon" className="w-14 h-14 shrink-0 rounded-xl bg-primary hover:bg-primary/80 text-white disabled:opacity-50 transition-all">
+                {isLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Send className="w-5 h-5" />}
               </Button>
             </form>
           </div>
