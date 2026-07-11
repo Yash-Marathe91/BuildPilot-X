@@ -4,13 +4,13 @@ import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Bell, Search, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
+  DropdownMenuGroup,
 } from "@/components/ui/dropdown-menu";
 import { logout } from "@/app/(auth)/actions";
 
@@ -41,10 +41,12 @@ export function Topbar() {
             </Button>
           } />
           <DropdownMenuContent align="end" className="w-56 glass-modal">
-            <DropdownMenuLabel>My Account</DropdownMenuLabel>
-            <DropdownMenuSeparator className="bg-white/10" />
-            <DropdownMenuItem className="focus:bg-white/10 cursor-pointer">Profile</DropdownMenuItem>
-            <DropdownMenuItem className="focus:bg-white/10 cursor-pointer">Workspace Settings</DropdownMenuItem>
+            <DropdownMenuGroup>
+              <DropdownMenuLabel>My Account</DropdownMenuLabel>
+              <DropdownMenuSeparator className="bg-white/10" />
+              <DropdownMenuItem className="focus:bg-white/10 cursor-pointer">Profile</DropdownMenuItem>
+              <DropdownMenuItem className="focus:bg-white/10 cursor-pointer">Workspace Settings</DropdownMenuItem>
+            </DropdownMenuGroup>
             <DropdownMenuSeparator className="bg-white/10" />
             <DropdownMenuItem 
               onClick={async () => await logout()}
