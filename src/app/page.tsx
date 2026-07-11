@@ -295,11 +295,11 @@ export default function LandingPage() {
           <div className="container mx-auto px-4 max-w-5xl text-center">
             <h2 className="text-3xl md:text-5xl font-bold text-white mb-6">About BuildPilot X</h2>
             <p className="text-lg text-white/70 leading-relaxed font-light mb-8">
-              We believe the future of entrepreneurship shouldn't be bottlenecked by technical execution. BuildPilot X was created to bridge the gap between visionary ideas and functional realities. By deploying a team of autonomous, specialized AI executives, we empower solo founders to operate with the capacity of a fully-funded venture studio. 
+              BuildPilot X was developed by Solo Developer <strong className="text-white">Yash Marathe</strong> specifically for the <strong className="text-white">AMD Pervasive AI Developer Contest</strong>. Our mission is to bridge the gap between visionary ideas and functional realities by deploying a team of autonomous, specialized AI executives. Powered by the incredible compute capabilities of AMD GPUs, a high-performance Python FastAPI backend, Next.js, and Supabase, we empower solo founders to operate with the capacity of a fully-funded venture studio. 
             </p>
             <div className="flex flex-wrap justify-center gap-4">
-              <div className="glass-card px-6 py-3 rounded-full text-white/80 text-sm font-medium border border-white/10 bg-white/5">100% Autonomous</div>
-              <div className="glass-card px-6 py-3 rounded-full text-white/80 text-sm font-medium border border-white/10 bg-white/5">Production-Ready Architecture</div>
+              <div className="glass-card px-6 py-3 rounded-full text-white/80 text-sm font-medium border border-primary/20 bg-primary/10">AMD Pervasive AI Hackathon</div>
+              <div className="glass-card px-6 py-3 rounded-full text-white/80 text-sm font-medium border border-white/10 bg-white/5">Built by Yash Marathe</div>
               <div className="glass-card px-6 py-3 rounded-full text-white/80 text-sm font-medium border border-white/10 bg-white/5">AMD Hardware Powered</div>
             </div>
           </div>
