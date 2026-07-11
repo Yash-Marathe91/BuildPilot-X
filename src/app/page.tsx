@@ -28,7 +28,9 @@ import React, { useRef } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { FluidBackground } from "@/components/FluidBackground";
+import dynamic from "next/dynamic";
+
+const Beams = dynamic(() => import("@/components/Beams"), { ssr: false });
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -197,7 +199,18 @@ export default function LandingPage() {
 
   return (
     <div ref={container} className="flex flex-col min-h-screen relative overflow-hidden bg-[#050505]">
-      <FluidBackground />
+      <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
+        <Beams
+          beamWidth={3}
+          beamHeight={30}
+          beamNumber={20}
+          lightColor="#ffffff"
+          speed={2}
+          noiseIntensity={1.75}
+          scale={0.2}
+          rotation={30}
+        />
+      </div>
       
       {/* Navigation */}
       <header className="fixed top-0 w-full z-50 border-b border-white/5 bg-background/30 backdrop-blur-xl supports-[backdrop-filter]:bg-background/10 transition-all duration-300">
@@ -278,6 +291,21 @@ export default function LandingPage() {
                   </p>
                 </div>
               ))}
+            </div>
+          </div>
+        </section>
+
+        {/* About Section */}
+        <section id="about" className="py-24 relative z-10 border-t border-white/5">
+          <div className="container mx-auto px-4 max-w-5xl text-center">
+            <h2 className="text-3xl md:text-5xl font-bold text-white mb-6">About BuildPilot X</h2>
+            <p className="text-lg text-white/70 leading-relaxed font-light mb-8">
+              We believe the future of entrepreneurship shouldn't be bottlenecked by technical execution. BuildPilot X was created to bridge the gap between visionary ideas and functional realities. By deploying a team of autonomous, specialized AI executives, we empower solo founders to operate with the capacity of a fully-funded venture studio. 
+            </p>
+            <div className="flex flex-wrap justify-center gap-4">
+              <div className="glass-card px-6 py-3 rounded-full text-white/80 text-sm font-medium border border-white/10 bg-white/5">100% Autonomous</div>
+              <div className="glass-card px-6 py-3 rounded-full text-white/80 text-sm font-medium border border-white/10 bg-white/5">No Placeholder Code</div>
+              <div className="glass-card px-6 py-3 rounded-full text-white/80 text-sm font-medium border border-white/10 bg-white/5">AMD Hardware Powered</div>
             </div>
           </div>
         </section>
