@@ -4,6 +4,7 @@ import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Bell, Search, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import Link from "next/link";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -45,16 +46,22 @@ export function Topbar() {
             <DropdownMenuGroup>
               <DropdownMenuLabel>My Account</DropdownMenuLabel>
               <DropdownMenuSeparator className="bg-white/10" />
-              <DropdownMenuItem className="focus:bg-white/10 cursor-pointer">Profile</DropdownMenuItem>
-              <DropdownMenuItem className="focus:bg-white/10 cursor-pointer">Workspace Settings</DropdownMenuItem>
+              <DropdownMenuItem className="focus:bg-white/10 cursor-pointer" render={<Link href="/dashboard/settings" />}>
+                Profile
+              </DropdownMenuItem>
+              <DropdownMenuItem className="focus:bg-white/10 cursor-pointer" render={<Link href="/dashboard/settings" />}>
+                Workspace Settings
+              </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator className="bg-white/10" />
-            <DropdownMenuItem 
-              onClick={async () => await logout()}
-              className="focus:bg-white/10 cursor-pointer text-destructive focus:text-destructive"
-            >
-              Log out
-            </DropdownMenuItem>
+            <form action={logout}>
+              <DropdownMenuItem 
+                render={<button type="submit" />}
+                className="focus:bg-white/10 cursor-pointer text-destructive focus:text-destructive w-full"
+              >
+                Log out
+              </DropdownMenuItem>
+            </form>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
